@@ -12,4 +12,9 @@
         android:title="@string/action_profile"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="Cerrar sesión" />
+
 </menu>

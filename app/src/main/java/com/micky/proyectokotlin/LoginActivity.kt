@@ -67,8 +67,11 @@ class LoginActivity : AppCompatActivity() {
 
 package com.micky.proyectokotlin
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.provider.Settings.Global
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
@@ -78,6 +81,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
+
+    object Global{
+        var preferecias_compartidas="sharedpreferences"
+    }
+
+
 
     private lateinit var auth: FirebaseAuth
 
@@ -127,7 +136,7 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     if (user != null && user.isEmailVerified) {
-                        val intent = Intent(this, MainActivity::class.java)
+                        val intent = Intent(this, SplashActivity::class.java)
                         intent.putExtra("Correo", user.email)
                         startActivity(intent)
                         finish()
@@ -150,4 +159,34 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
+
+    fun verificar_sesion_abierta(){
+
+        var sesion_abierta:SharedPreferences=getSharedPreferences(Global.preferecias_compartidas,Context.MODE_PRIVATE )
+
+        var correo= sesion_abierta.getString("Correo",null)
+        var proveedor= sesion_abierta.getString("Proveedor",null)
+
+        if(correo!=null && proveedor!=null){
+
+            var intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("Correo", correo)
+            intent.putExtra("Proveedor", proveedor)
+            startActivity(intent)
+
+        }
+
+
+
+    }
+
+    fun guardar_sesion(correo:String, proveedor:String){
+        var guardar_sesion:SharedPreferences.Editor=this.getSharedPreferences(Global.preferecias_compartidas, Context.MODE_PRIVATE).edit()
+        guardar_sesion.putString("Correo",correo)
+        guardar_sesion.putString("Proveedor",proveedor)
+        guardar_sesion.apply()
+        guardar_sesion.commit()
+    }
+
+
 }
